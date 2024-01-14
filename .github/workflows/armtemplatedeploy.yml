@@ -1,13 +1,13 @@
-name: armTemplateDeploy
+name: armTemplateDeployment
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deployStaging:
-    name: Deploy to Staging
+  armDeploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,4 +16,13 @@ jobs:
       - name: Azure Login
         uses: Azure/login@v1
         with:
-          creds: ${{ secrets.GITHUBACTION}}
+          creds: ${{ secrets.GITHUBACTION }}
+
+      - name: Deploy Resource Group rg-githubactions
+        uses: Azure/arm-deploy@v1
+        with:
+          scope: subscription
+          subscriptionId: 4d0243f5-b1f4-4bd0-91bb-ce6481e6e810
+          region: Australia East
+          template: ./arm-templates/resourcegroup.json
+          deploymentName: rg-githubactions
